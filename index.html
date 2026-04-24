@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void: #07060a;
+      --ink: #12101c;
+      --panel: rgba(18, 14, 28, 0.82);
+      --panel-edge: rgba(200, 245, 102, 0.22);
+      --text: #f6f4ff;
+      --muted: #b9b3c9;
+      --accent: #ff5c8a;
+      --accent-2: #c8f566;
+      --accent-soft: #9ae6ff;
+      --line: rgba(255, 255, 255, 0.1);
+      --shadow: 0 28px 100px rgba(0, 0, 0, 0.65), 0 0 80px rgba(255, 92, 138, 0.06);
+      --radius: 18px;
+      --font-sans: "DM Sans", system-ui, sans-serif;
+      --font-display: "Syne", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--void);
+      color: var(--text);
+      overflow: hidden;
+    }
+    .deck {
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+    .stage {
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: clamp(16px, 4vw, 40px);
+      background-color: var(--void);
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.55s ease;
+    }
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 100% 80% at 10% 0%, rgba(200, 245, 102, 0.18), transparent 45%),
+        radial-gradient(circle at 95% 20%, rgba(255, 92, 138, 0.2), transparent 40%),
+        radial-gradient(circle at 40% 100%, rgba(154, 230, 255, 0.12), transparent 42%);
+      animation: mesh-drift 14s ease-in-out infinite alternate;
+      mix-blend-mode: screen;
+    }
+    @keyframes mesh-drift {
+      from { transform: translate(0, 0) scale(1); opacity: 0.85; }
+      to { transform: translate(-3%, 2%) scale(1.06); opacity: 1; }
+    }
+    .stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at center, transparent 0%, rgba(7, 6, 10, 0.5) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+    .slide {
+      position: relative;
+      z-index: 1;
+      width: min(920px, 100%);
+      min-height: min(480px, 68vh);
+      background: linear-gradient(145deg, rgba(30, 22, 40, 0.92) 0%, rgba(14, 10, 22, 0.88) 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(200, 245, 102, 0.12);
+      padding: clamp(22px, 3.5vw, 44px);
+      backdrop-filter: blur(18px) saturate(140%);
+      display: none;
+      animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+      overflow: hidden;
+    }
+    .slide.wide {
+      width: min(1080px, 100%);
+    }
+    .slide.active { display: block; }
+    .slide > * { position: relative; z-index: 1; }
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(125deg, rgba(200, 245, 102, 0.55), rgba(255, 92, 138, 0.35), rgba(154, 230, 255, 0.35), rgba(200, 245, 102, 0.4));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+      margin: 0 0 10px;
+      font-weight: 700;
+    }
+    .rule {
+      width: 72px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent), var(--accent-soft));
+      border-radius: 4px;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 4.2vw, 3.25rem);
+      line-height: 1.05;
+      margin: 0 0 12px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(105deg, #fff 0%, var(--accent-soft) 45%, var(--accent-2) 95%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.45rem, 2.8vw, 2.05rem);
+      margin: 0 0 16px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+    }
+    .cue-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cue-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .cue-list li::before {
+      content: "";
+      flex: 0 0 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      box-shadow: 0 0 12px rgba(200, 245, 102, 0.45);
+      transform: translateY(2px);
+    }
+    .cue-list.compact { gap: 6px; }
+    .cue-list.compact li { font-size: clamp(0.95rem, 1.35vw, 1.05rem); }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .chip {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(200, 245, 102, 0.35);
+      background: linear-gradient(160deg, rgba(255, 92, 138, 0.15), rgba(20, 12, 28, 0.6));
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 700;
+      box-shadow: 0 0 24px rgba(255, 92, 138, 0.08);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 6px;
+    }
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+    }
+    .stat {
+      text-align: center;
+      padding: 16px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.22);
+    }
+    .stat b {
+      display: block;
+      font-family: var(--font-display);
+      font-size: clamp(1.5rem, 3vw, 1.85rem);
+      color: var(--accent-2);
+      margin-bottom: 4px;
+    }
+    .stat span {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .source {
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+    .callout {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-left: 4px solid var(--accent-2);
+      border-radius: 0 14px 14px 0;
+      background: linear-gradient(90deg, rgba(200, 245, 102, 0.12), rgba(255, 92, 138, 0.08));
+      color: #f0fff0;
+      font-family: var(--font-display);
+      font-size: 1.02rem;
+      font-style: italic;
+      font-weight: 600;
+    }
+    .pairs {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .pairs li {
+      font-size: clamp(0.95rem, 1.4vw, 1.08rem);
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .pairs li:last-child { border-bottom: 0; }
+    .pairs strong { color: var(--text); font-weight: 700; }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      margin-top: 22px;
+      justify-content: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.25);
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .title-center { text-align: center; }
+    .title-center .rule { margin-left: auto; margin-right: auto; }
+    .title-center h1 { margin-bottom: 8px; }
+    .title-lead {
+      font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+      color: var(--muted);
+      margin: 0 0 8px;
+      max-width: 36ch;
+      margin-inline: auto;
+      line-height: 1.45;
+    }
+    .qa h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+    }
+    .hero-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+      text-align: left;
+    }
+    @media (max-width: 720px) {
+      .hero-strip { grid-template-columns: 1fr; }
+    }
+    .hero-tile {
+      margin: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.35);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+    .hero-tile img {
+      display: block;
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .hero-tile figcaption {
+      padding: 10px 12px;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent-soft);
+      font-weight: 700;
+    }
+    .split-wrap {
+      display: grid;
+      grid-template-columns: 1fr min(38%, 320px);
+      gap: clamp(16px, 3vw, 28px);
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .split-wrap {
+        grid-template-columns: 1fr;
+      }
+      .split-wrap .explain img {
+        max-height: 220px;
+      }
+    }
+    .split-copy .rule { margin-bottom: 14px; }
+    .explain {
+      margin: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(200, 245, 102, 0.25);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45), 0 0 40px rgba(255, 92, 138, 0.12);
+    }
+    .explain img {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 200px;
+      max-height: 340px;
+      object-fit: cover;
+    }
+    .explain figcaption {
+      padding: 10px 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: rgba(0, 0, 0, 0.45);
+      line-height: 1.35;
+    }
+    .dual-visual {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 640px) {
+      .dual-visual { grid-template-columns: 1fr; }
+    }
+    .dual-visual figure {
+      margin: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .dual-visual img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+    .dual-visual figcaption {
+      padding: 8px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-soft);
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .tdee-visual {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 10px;
+      margin: 8px 0 4px;
+      align-items: stretch;
+    }
+    @media (max-width: 640px) {
+      .tdee-visual { grid-template-columns: 1fr; }
+    }
+    .tdee-col {
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--line);
+    }
+    .tdee-col small {
+      display: block;
+      margin-top: 6px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      opacity: 0.85;
+    }
+    .tdee-col--def {
+      background: linear-gradient(180deg, rgba(154, 230, 255, 0.2), rgba(10, 8, 16, 0.5));
+      color: var(--accent-soft);
+    }
+    .tdee-col--maint {
+      background: linear-gradient(180deg, rgba(200, 245, 102, 0.28), rgba(10, 8, 16, 0.5));
+      color: var(--accent-2);
+      box-shadow: 0 0 28px rgba(200, 245, 102, 0.15);
+    }
+    .tdee-col--sur {
+      background: linear-gradient(180deg, rgba(255, 92, 138, 0.25), rgba(10, 8, 16, 0.5));
+      color: #ffc4d4;
+    }
+    .footer-bar {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid var(--line);
+      background: rgba(10, 6, 8, 0.92);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+    .notes {
+      flex: 1;
+      min-width: 0;
+      line-height: 1.45;
+    }
+    .notes.hidden { display: none; }
+    .notes b { color: var(--accent-2); }
+    .hint { opacity: 0.65; white-space: nowrap; font-size: 0.78rem; }
+    .progress {
+      font-variant-numeric: tabular-nums;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .click-zones {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .click-zones button {
+      pointer-events: auto;
+      opacity: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+    @media (max-width: 640px) {
+      .hint { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="deck">
+    <div class="stage" id="stage">
+      <div id="slides-root"></div>
+      <div class="click-zones" aria-hidden="true">
+        <button type="button" id="prev-zone" tabindex="-1" title="Previous"></button>
+        <button type="button" id="next-zone" tabindex="-1" title="Next"></button>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <div class="notes" id="notes-panel"><b>Speaker notes</b> <span id="notes-text"></span></div>
+      <div class="progress" id="progress"></div>
+      <div class="hint">← → · <b>N</b> hide notes</div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * visualStrip (title): tiny “story” photos + captions.
+     * explain: big side photo + caption on content slides.
+     * dual: two photos (e.g. myth vs reality).
+     * diagram: "tdee" = simple on-slide meter.
+     * bgImage: full-screen mood layer behind the card.
+     * Image URLs must return HTTP 200 (Unsplash sometimes retires photo IDs → broken pictures).
+     */
+    const CONFIG = {
+      documentTitle: "CICO · Energy balance",
+      slides: [
+        {
+          layout: "title",
+          eyebrow: "Energy balance",
+          title: "Calories In, Calories Out",
+          lead: "One equation.",
+          wide: true,
+          visualStrip: [
+            {
+              src: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=900&q=85",
+              caption: "Food in — calories you eat",
+            },
+            {
+              src: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=85",
+              caption: "Choices — what actually hits the plate",
+            },
+            {
+              src: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=900&q=85",
+              caption: "Life out — walk, class, training, fidgeting",
+            },
+          ],
+          meta: [
+            { icon: "·", text: "Your name" },
+            { icon: "·", text: "April 2026" },
+            { icon: "·", text: "English" },
+          ],
+          bgImage:
+            "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=2000&q=80",
+          notes:
+            "Hello everyone. One idea today: weight change is not random — it’s an equation. Calories in versus calories out: CICO.",
+        },
+        {
+          eyebrow: "Hook",
+          title: "Not luck — math",
+          wide: true,
+          cues: [
+            "Change on the scale isn’t magic — it’s a balance",
+            "Genes tweak the numbers, they don’t break the equation",
+            "CICO: calories in vs calories out",
+          ],
+          explain: {
+            src: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1200&q=80",
+            caption: "Same physics for every body: energy in, energy out.",
+          },
+          bgImage:
+            "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=2000&q=80",
+          notes:
+            "Most people think weight gain or weight loss is random, or purely based on genetics. It’s not. It’s actually very simple—it boils down to a mathematical equation. Your body runs on calories, and whether you gain or lose weight depends entirely on how many calories you consume compared to how many you burn. This is a concept known as CICO: Calories In, Calories Out.",
+        },
+        {
+          eyebrow: "Baseline",
+          title: "BMR — your idle burn",
+          wide: true,
+          cues: [
+            "BMR = calories burned if you did nothing but stay alive",
+            "Heart, brain, organs — always running in the background",
+            "Height, weight, age, gender → your personal baseline",
+          ],
+          explain: {
+            src: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1400&q=85",
+            caption: "Even at rest you’re not at zero — baseline burn never switches off.",
+          },
+          bgImage:
+            "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=85",
+          notes:
+            "First, we have to understand the BMR, or Basal Metabolic Rate. Think of this as your ‘idling’ speed. This is the number of calories your body burns if you do absolutely nothing—no movement, no activity, just staying alive. Even while you’re sleeping, your body is working. Your heart beating, your brain processing, and your organs functioning all require constant energy. This number is unique to you. It’s calculated based on your weight, height, age, gender, and body composition. A bigger engine requires more fuel.",
+        },
+        {
+          eyebrow: "Maintenance",
+          title: "TDEE — the line",
+          wide: true,
+          diagram: "tdee",
+          pairs: [
+            "BMR + daily life → TDEE (your maintenance line)",
+            "The Threshold · Hold vs. Change",
+          ],
+          callout: "It has to go somewhere",
+          explain: {
+            src: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?auto=format&fit=crop&w=1400&q=85",
+            caption: "Every step and session stacks on top of your resting burn.",
+          },
+          bgImage:
+            "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=2000&q=85",
+          notes:
+            "Now, BMR isn't the full picture because we don't just lie in bed all day. When you add your daily activity—walking to class, studying, walking upstairs, or even just fidgeting—you get your Maintenance Calories. Think of this as a line in the sand. If you eat exactly at that line, your weight stays stable. If you eat above that line, you are in a surplus and will gain weight. If you eat below it, you are in a deficit and will lose weight. It’s not magic; it’s thermodynamics. In fact, it’s the First Law of Thermodynamics: energy cannot be created or destroyed, only converted from one form to another. If you provide your body with extra energy it doesn't need, it can’t just disappear—it has to be stored, usually as adipose tissue, or fat.",
+        },
+        {
+          eyebrow: "Blind spots",
+          title: "Where the math goes missing",
+          wide: true,
+          cues: [
+            "We remember the big dinner, not the grazing in between",
+            "Drinks (coffee, juice, soda) carry calories we don’t “count” as food",
+            "Different people, different TDEE — same rules of energy balance",
+          ],
+          pairs: [
+            "What looked huge on camera → feels unfair in the story",
+            "What the whole 24 hours actually adds up to → CICO shows up",
+          ],
+          callout: "Zoom out to the full day — not the one moment everyone saw.",
+          explain: {
+            src: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1400&q=85",
+            caption: "Paper or an app: when you log the day, the quiet calories stop disappearing.",
+          },
+          bgImage:
+            "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=2000&q=85",
+          notes:
+            "This is where most people get it wrong. They blame genetics or a ‘slow metabolism.’ But you cannot ignore the math. You cannot eat the same amount as a 120-kilogram man and expect to not gain weight. We also often see the ‘skinny friend’ who seems to eat tons of junk food without gaining weight. We think they’re lucky, but in reality, their body might just be ‘starving in silence’ without them even knowing. Their hunger baseline is simply lower, but that does not change the math! They might eat one massive 2,000-calorie meal in front of you, but if that’s all they ate for the entire day, they are still barely hitting their maintenance. For pure weight change, the quantity of calories is king. The quality only becomes the priority when you want to change your body composition—like building muscle instead of just adding mass.",
+        },
+        {
+          eyebrow: "Close",
+          title: "You own the equation",
+          wide: true,
+          cues: [
+            "Weight change isn’t luck or being ‘cursed’ by genetics",
+            "Understand your mechanics → you’re in charge of the equation",
+          ],
+          explain: {
+            src: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1400&q=85",
+            caption: "Stop guessing, look at the numbers — then the path gets clear.",
+          },
+          bgImage:
+            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=85",
+          notes:
+            "So, at the end of the day, weight change is not about luck or being ‘cursed’ with bad genetics. It’s about understanding the mechanics of your own body. Once you stop guessing and start looking at the numbers, you realize that you are the one in control of the equation. Thank you.",
+        },
+        {
+          layout: "qa",
+          eyebrow: "Q&A",
+          title: "Questions?",
+          lead: "",
+          bgImage:
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80",
+          notes: "Thank you — happy to take questions.",
+        },
+      ],
+    };
+
+    const root = document.getElementById("slides-root");
+    const stage = document.getElementById("stage");
+    const notesText = document.getElementById("notes-text");
+    const notesPanel = document.getElementById("notes-panel");
+    const progressEl = document.getElementById("progress");
+    let index = 0;
+    let notesVisible = true;
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttrUrl(u) {
+      return String(u).replace(/"/g, "%22");
+    }
+
+    function visualStripHtml(items) {
+      if (!items || !items.length) return "";
+      const tiles = items
+        .map(
+          (v) => `
+        <figure class="hero-tile">
+          <img src="${escapeAttrUrl(v.src)}" alt="" width="400" height="240" decoding="async" referrerpolicy="no-referrer-when-downgrade" />
+          <figcaption>${escapeHtml(v.caption)}</figcaption>
+        </figure>`
+        )
+        .join("");
+      return `<div class="hero-strip">${tiles}</div>`;
+    }
+
+    function explainFigure(explain) {
+      if (!explain || !explain.src) return "";
+      const cap = explain.caption
+        ? `<figcaption>${escapeHtml(explain.caption)}</figcaption>`
+        : "";
+      return `<figure class="explain"><img src="${escapeAttrUrl(
+        explain.src
+      )}" alt="" width="640" height="480" decoding="async" loading="lazy" referrerpolicy="no-referrer-when-downgrade" />${cap}</figure>`;
+    }
+
+    function dualVisualHtml(items) {
+      if (!items || !items.length) return "";
+      return `<div class="dual-visual">${items
+        .map(
+          (v) => `<figure>
+        <img src="${escapeAttrUrl(v.src)}" alt="" width="500" height="280" decoding="async" loading="lazy" referrerpolicy="no-referrer-when-downgrade" />
+        <figcaption>${escapeHtml(v.caption)}</figcaption>
+      </figure>`
+        )
+        .join("")}</div>`;
+    }
+
+    function tdeeDiagramHtml() {
+      return `<div class="tdee-visual" aria-hidden="true">
+      <div class="tdee-col tdee-col--def">Below line<small>deficit · trend down</small></div>
+      <div class="tdee-col tdee-col--maint">TDEE<small>maintenance · hold steady</small></div>
+      <div class="tdee-col tdee-col--sur">Above line<small>surplus · stored</small></div>
+    </div>`;
+    }
+
+    function cuesHtml(items) {
+      if (!items || !items.length) return "";
+      const lis = items.map((t) => `<li>${escapeHtml(t)}</li>`).join("");
+      return `<ul class="cue-list">${lis}</ul>`;
+    }
+
+    function chipsHtml(items) {
+      if (!items || !items.length) return "";
+      const chips = items.map((t) => `<span class="chip">${escapeHtml(t)}</span>`).join("");
+      return `<div class="chips">${chips}</div>`;
+    }
+
+    function statsHtml(stats) {
+      if (!stats || !stats.length) return "";
+      const cells = stats
+        .map(
+          (s) =>
+            `<div class="stat"><b>${escapeHtml(s.value)}</b><span>${escapeHtml(s.label)}</span></div>`
+        )
+        .join("");
+      return `<div class="stats">${cells}</div>`;
+    }
+
+    function pairsHtml(pairs) {
+      if (!pairs || !pairs.length) return "";
+      const lis = pairs
+        .map((line) => {
+          const m = line.match(/^(.+?)\s*→\s*(.+)$/);
+          if (m) {
+            return `<li><strong>${escapeHtml(m[1].trim())}</strong> → ${escapeHtml(m[2].trim())}</li>`;
+          }
+          return `<li>${escapeHtml(line)}</li>`;
+        })
+        .join("");
+      return `<ul class="pairs">${lis}</ul>`;
+    }
+
+    function renderBodySlide(s) {
+      const parts = [];
+      parts.push(`<div class="rule"></div>`);
+      parts.push(`<h2>${escapeHtml(s.title || "")}</h2>`);
+      if (s.diagram === "tdee") parts.push(tdeeDiagramHtml());
+      if (s.cues) parts.push(cuesHtml(s.cues));
+      if (s.chips) parts.push(chipsHtml(s.chips));
+      if (s.stats) parts.push(statsHtml(s.stats));
+      if (s.source) parts.push(`<p class="source">${escapeHtml(s.source)}</p>`);
+      if (s.pairs) parts.push(pairsHtml(s.pairs));
+      if (s.callout) parts.push(`<div class="callout">${escapeHtml(s.callout)}</div>`);
+      if (s.dual) parts.push(dualVisualHtml(s.dual));
+      const inner = parts.join("");
+      if (s.explain && s.explain.src) {
+        return `<div class="split-wrap"><div class="split-copy">${inner}</div>${explainFigure(s.explain)}</div>`;
+      }
+      return inner;
+    }
+
+    function renderSlides() {
+      root.innerHTML = "";
+      CONFIG.slides.forEach((s, i) => {
+        const el = document.createElement("section");
+        el.className = "slide" + (i === 0 ? " active" : "");
+        el.setAttribute("role", "group");
+        el.setAttribute("aria-label", `Slide ${i + 1} of ${CONFIG.slides.length}`);
+
+        if (s.wide) el.classList.add("wide");
+
+        if (s.layout === "title" || s.layout === "qa") {
+          el.classList.add("title-center");
+          if (s.layout === "qa") el.classList.add("qa");
+          const metaHtml = (s.meta || [])
+            .map((m) => `<span class="pill">${escapeHtml(m.icon)} ${escapeHtml(m.text)}</span>`)
+            .join("");
+          const leadHtml =
+            s.lead && String(s.lead).trim()
+              ? `<p class="title-lead">${escapeHtml(s.lead)}</p>`
+              : "";
+          const strip = s.layout === "title" ? visualStripHtml(s.visualStrip) : "";
+          el.innerHTML = `
+            <p class="eyebrow">${escapeHtml(s.eyebrow || "")}</p>
+            <div class="rule"></div>
+            <h1>${escapeHtml(s.title)}</h1>
+            ${leadHtml}
+            ${metaHtml ? `<div class="meta">${metaHtml}</div>` : ""}
+            ${strip}
+          `;
+        } else {
+          el.innerHTML = `
+            <p class="eyebrow">${escapeHtml(s.eyebrow || "")}</p>
+            ${renderBodySlide(s)}
+          `;
+        }
+        root.appendChild(el);
+      });
+      document.title = CONFIG.documentTitle || "Presentation";
+    }
+
+    function setStageBackground(s) {
+      const url = s && s.bgImage;
+      if (url) {
+        const esc = String(url).replace(/"/g, "\\%22");
+        stage.style.backgroundImage = [
+          "linear-gradient(165deg, rgba(10, 8, 18, 0.72) 0%, rgba(7, 6, 10, 0.88) 50%, rgba(12, 6, 14, 0.92) 100%)",
+          `url("${esc}")`,
+        ].join(", ");
+        stage.style.backgroundSize = "cover, cover";
+        stage.style.backgroundPosition = "center, center";
+      } else {
+        stage.style.backgroundImage = "";
+        stage.style.backgroundSize = "";
+        stage.style.backgroundPosition = "";
+      }
+    }
+
+    function update() {
+      const sections = root.querySelectorAll(".slide");
+      sections.forEach((el, i) => el.classList.toggle("active", i === index));
+      const s = CONFIG.slides[index];
+      notesText.textContent = s.notes || "";
+      progressEl.textContent = `${index + 1} / ${CONFIG.slides.length}`;
+      notesPanel.classList.toggle("hidden", !notesVisible);
+      setStageBackground(s);
+    }
+
+    function go(delta) {
+      const n = CONFIG.slides.length;
+      index = (index + delta + n) % n;
+      update();
+    }
+
+    document.getElementById("prev-zone").addEventListener("click", () => go(-1));
+    document.getElementById("next-zone").addEventListener("click", () => go(1));
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " " || e.key === "PageDown") {
+        e.preventDefault();
+        go(1);
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp" || e.key === "PageUp") {
+        e.preventDefault();
+        go(-1);
+      } else if (e.key.toLowerCase() === "n") {
+        notesVisible = !notesVisible;
+        update();
+      } else if (e.key.toLowerCase() === "h") {
+        go(-1);
+      } else if (e.key.toLowerCase() === "l") {
+        go(1);
+      }
+    });
+
+    renderSlides();
+    update();
+  </script>
+</body>
+</html>
