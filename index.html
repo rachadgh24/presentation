@@ -180,19 +180,28 @@
     .cue-list.compact li { font-size: clamp(0.95rem, 1.35vw, 1.05rem); }
     .chips {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-wrap: nowrap;
+      gap: 6px;
       margin-top: 4px;
+      justify-content: center;
+      max-width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
     }
     .chip {
-      padding: 9px 16px;
+      flex: 0 0 auto;
+      padding: 7px 10px;
       border-radius: 999px;
       border: 1px solid rgba(200, 245, 102, 0.35);
       background: linear-gradient(160deg, rgba(255, 92, 138, 0.15), rgba(20, 12, 28, 0.6));
       color: var(--text);
-      font-size: 0.88rem;
+      font-size: clamp(0.68rem, 1.15vw, 0.82rem);
       font-weight: 700;
       box-shadow: 0 0 24px rgba(255, 92, 138, 0.08);
+      white-space: nowrap;
     }
     .stats {
       display: grid;
@@ -589,25 +598,21 @@
             "Now, BMR isn't the full picture because we don't just lie in bed all day. When you add your daily activity—walking to class, studying, walking upstairs, or even just fidgeting—you get your Maintenance Calories. Think of this as a line in the sand. If you eat exactly at that line, your weight stays stable. If you eat above that line, you are in a surplus and will gain weight. If you eat below it, you are in a deficit and will lose weight. It’s not magic; it’s thermodynamics. In fact, it’s the First Law of Thermodynamics: energy cannot be created or destroyed, only converted from one form to another. If you provide your body with extra energy it doesn't need, it can’t just disappear—it has to be stored, usually as adipose tissue, or fat.",
         },
         {
-          eyebrow: "Blind spots",
-          title: "Where the math goes missing",
+          eyebrow: "Myths",
+          title: "Stories we tell — and the ledger underneath",
           wide: true,
-          cues: [
-            "We remember the big dinner, not the grazing in between",
-            "Drinks (coffee, juice, soda) carry calories we don’t “count” as food",
-            "Different people, different TDEE — same rules of energy balance",
-          ],
+          chips: ["Slow metabolism", "Skinny friend", "Genetics wrote my fate", "quality vs quantity"],
           pairs: [
-            "What looked huge on camera → feels unfair in the story",
-            "What the whole 24 hours actually adds up to → CICO shows up",
+            "Weight on the scale → mostly total calories in vs out",
+            "Muscle, fullness, health → quality & training matter too — same budget, different goals",
           ],
-          callout: "Zoom out to the full day — not the one moment everyone saw.",
+          callout: "You can’t ignore the math because the story sounds convincing.",
           explain: {
-            src: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=1400&q=85",
-            caption: "Paper or an app: when you log the day, the quiet calories stop disappearing.",
+            src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1400&q=85",
+            caption: "Same body, same rules: energy in, energy out — then nuance on top.",
           },
           bgImage:
-            "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=2000&q=85",
+            "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2000&q=85",
           notes:
             "This is where most people get it wrong. They blame genetics or a ‘slow metabolism.’ But you cannot ignore the math. You cannot eat the same amount as a 120-kilogram man and expect to not gain weight. We also often see the ‘skinny friend’ who seems to eat tons of junk food without gaining weight. We think they’re lucky, but in reality, their body might just be ‘starving in silence’ without them even knowing. Their hunger baseline is simply lower, but that does not change the math! They might eat one massive 2,000-calorie meal in front of you, but if that’s all they ate for the entire day, they are still barely hitting their maintenance. For pure weight change, the quantity of calories is king. The quality only becomes the priority when you want to change your body composition—like building muscle instead of just adding mass.",
         },
